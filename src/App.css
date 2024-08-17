@@ -1,0 +1,44 @@
+.excalidraw .sidebar-trigger {
+  display: none !important;
+}
+
+.excalidraw .HelpDialog__header {
+  display: none !important;
+}
+
+.dropdown-menu-group {
+  display: none !important;
+}
+
+.dropdown-menu-group + div {
+  display: none !important;
+}
+
+.Home {
+  user-select:none;
+  font-optical-sizing: auto;
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #ffffff;
+  opacity: 0.8;
+  background: radial-gradient(
+      circle,
+      transparent 20%,
+      #ffffff 20%,
+      #ffffff 80%,
+      transparent 80%,
+      transparent
+    ),
+    radial-gradient(
+        circle,
+        transparent 20%,
+        #ffffff 20%,
+        #ffffff 80%,
+        transparent 80%,
+        transparent
+      )
+      67.5px 67.5px,
+    linear-gradient(#f6f6f6 5.4px, transparent 5.4px) 0 -2.7px,
+    linear-gradient(90deg, #f6f6f6 5.4px, #ffffff 5.4px) -2.7px 0;
+  background-size: 135px 135px, 135px 135px, 67.5px 67.5px, 67.5px 67.5px;
+}
