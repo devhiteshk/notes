@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import * as React from 'react';
+import axios from 'axios';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -10,8 +10,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Box, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { overrides } from '../overrides';
+import { token } from '../utils/getToken'; // Assuming you have a utility to get the auth token
 
-export default function FormDialog({ type }) {
+export default function FormDialog({ type, setRerender, projectId="" }) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -22,9 +23,51 @@ export default function FormDialog({ type }) {
         setOpen(false);
     };
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const formJson = Object.fromEntries(formData.entries());
+        const name = formJson.textfieldname;
+
+        try {
+            if (type === "folder") {
+                // Create a new project (folder)
+                const response = await axios.post(
+                    `${import.meta.env.VITE_APP_API_URL}/api/projects`,
+                    { name },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                setRerender((old) => !old)
+                console.log("Project created:", response.data);
+            } else {
+                // Create a new file within a project
+                const response = await axios.post(
+                    `${import.meta.env.VITE_APP_API_URL}/api/files`,
+                    { name, projectId },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                setRerender((old) => !old)
+                console.log("File created:", response.data);
+            }
+            handleClose();
+        } catch (error) {
+            console.error("Error creating resource:", error);
+        }
+    };
+
     return (
         <React.Fragment>
-            <Tooltip title="Create Folder">
+            <Tooltip title={type === "folder" ? "Create Folder" : "Create File"}>
                 <AddIcon onClick={handleClickOpen} sx={{ color: "#fff", cursor: "pointer" }} />
             </Tooltip>
             <Dialog
@@ -32,14 +75,7 @@ export default function FormDialog({ type }) {
                 onClose={handleClose}
                 PaperProps={{
                     component: 'form',
-                    onSubmit: (event) => {
-                        event.preventDefault();
-                        const formData = new FormData(event.currentTarget);
-                        const formJson = Object.fromEntries((formData).entries());
-                        const email = formJson.email;
-                        console.log(email);
-                        handleClose();
-                    },
+                    onSubmit: handleSubmit,
                 }}
             >
                 <DialogTitle>{type === "folder" ? "Create Folder" : "Create File"}</DialogTitle>

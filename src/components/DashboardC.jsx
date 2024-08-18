@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 function DashboardC() {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+  const [rerender, setRerender] = useState(false);
 
   const getProjects = async () => {
     let response = await axios.get(
@@ -30,7 +31,7 @@ function DashboardC() {
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [rerender]);
 
   console.log("data", data);
 
@@ -67,7 +68,7 @@ function DashboardC() {
           >
             Folders
           </Typography>
-          <FormDialog type={"folder"} />
+          <FormDialog type={"folder"} setRerender={setRerender} />
         </Box>
         <Box
           maxWidth={"xl"}

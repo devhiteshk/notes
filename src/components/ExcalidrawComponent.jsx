@@ -33,9 +33,12 @@ const ExcalidrawComponent = () => {
       const data = response.data;
       const initialElements = data.content ? JSON.parse(data.content) : [];
 
-      console.log("Initial Elements Loaded:", initialElements); // Debugging
-
-      setElements(initialElements || []);
+      console.log("Initial Elements Loaded:", initialElements);
+      if (initialElements?.length === 0) {
+        setElements([{}]);
+      } else {
+        setElements(initialElements || []);
+      }
     } catch (error) {
       console.error("Error fetching initial data:", error);
     }
@@ -102,7 +105,7 @@ const ExcalidrawComponent = () => {
                   elevation={3}
                   sx={{
                     zIndex: 4,
-                    mt:1,
+                    mt: 1,
                     borderRadius: "50%",
                     width: "30px",
                     height: "30px",

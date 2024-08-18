@@ -11,6 +11,7 @@ function ProjectC() {
   const [data, setData] = useState([]);
   const params = useParams();
   const navigate = useNavigate();
+  const [rerender,setRerender] = useState(false)
 
   const getProjects = async () => {
     let response = await axios.get(
@@ -31,7 +32,7 @@ function ProjectC() {
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [rerender]);
 
   console.log("data", data);
 
@@ -69,9 +70,9 @@ function ProjectC() {
           >
             {data?.[0]?.project?.name}
           </Typography>
-          <FormDialog type={"file"} />
+          <FormDialog type={"file"} projectId={params.id} setRerender={setRerender} />
         </Box>
-        <Box maxWidth={"xl"} width="100%">
+        <Box maxWidth={"xl"} width="100%" display={"flex"} flexWrap={"wrap"} gap={"16px"}>
           {data?.map((item) => (
             <Box key={item._id} maxWidth="270px" width="100%">
               <Card
