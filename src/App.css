@@ -14,8 +14,12 @@
   display: none !important;
 }
 
+.excalidraw .confirm-dialog-buttons{
+  margin-top: 20px !important;
+}
+
 .Home {
-  user-select:none;
+  user-select: none;
   font-optical-sizing: auto;
   min-height: 100vh;
   min-width: 100vw;
@@ -41,4 +45,12 @@
     linear-gradient(#f6f6f6 5.4px, transparent 5.4px) 0 -2.7px,
     linear-gradient(90deg, #f6f6f6 5.4px, #ffffff 5.4px) -2.7px 0;
   background-size: 135px 135px, 135px 135px, 67.5px 67.5px, 67.5px 67.5px;
+}
+
+.Dashboard {
+  background-color: #fff;
+  background-image: radial-gradient(#000 1px, transparent 1px),
+    radial-gradient(#000 1px, #fff 1px);
+  background-size: 80px 80px;
+  background-position: 0 0, 40px 40px;
 }

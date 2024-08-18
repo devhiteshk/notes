@@ -1,8 +1,8 @@
-import React from 'react'
+import DashboardC from "../components/DashboardC"
 
 function Dashboard() {
   return (
-    <div>Dashboard</div>
+    <DashboardC />
   )
 }
 

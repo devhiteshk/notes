@@ -1,8 +1,8 @@
-import React from 'react'
+import SignUpSide from '../components/Signup'
 
 function Signup() {
   return (
-    <div>Signup</div>
+    <SignUpSide/>
   )
 }
 

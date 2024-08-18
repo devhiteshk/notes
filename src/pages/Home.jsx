@@ -1,5 +1,4 @@
 import { Box, Button, Typography, Zoom } from "@mui/material";
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import image from "./../assets/diary-journal-color-icon.svg";
 
