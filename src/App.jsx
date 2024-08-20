@@ -7,6 +7,7 @@ import Home from "./pages/Home.jsx";
 import "./App.css";
 import Project from "./pages/Project.jsx";
 import ProtectedRoute from "./auth.jsx";
+import Error404 from "./Error404.jsx";
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
           path="/folder/:id"
           element={<ProtectedRoute element={<Project />} />}
         />
-        <Route path="*" element={<>Error 404</>} />
+        <Route path="*" element={<Error404/>} />
       </Routes>
     </Router>
   );
