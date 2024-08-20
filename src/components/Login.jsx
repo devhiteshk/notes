@@ -162,7 +162,7 @@ export default function SignInSide() {
             </Button>
             <Grid container mt={1}>
               <Grid item xs>
-                <Link
+                {/* <Link
                   sx={{ textDecoration: "none", cursor: "pointer" }}
                   color={"#000"}
                   fontFamily="Caveat, cursive"
@@ -171,7 +171,7 @@ export default function SignInSide() {
                   fontSize={16}
                 >
                   Forgot password?
-                </Link>
+                </Link> */}
               </Grid>
               <Grid item>
                 <Link
