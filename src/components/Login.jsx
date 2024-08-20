@@ -58,8 +58,8 @@ export default function SignInSide() {
 
       const data = await response.data;
 
-      if (response.status === 200) {        
-        localStorage.setItem("token", data.token);
+      if (response.status === 200) {
+        window.localStorage.setItem("token", data.token);
         navigate("/dashboard");
       } else {
         console.log("Login failed");
@@ -110,7 +110,7 @@ export default function SignInSide() {
             component="form"
             onSubmit={handleSignIn}
             sx={{ display: "flex", flexDirection: "column", width: "100%" }}
-            p={{ md: "0 25px", xs: "0 10px", xl: "0 120px" }}
+            p={{ xs: "0px 20px", md: "0px 35px", lg: "0px 40px" }}
           >
             <TextField
               hiddenLabel

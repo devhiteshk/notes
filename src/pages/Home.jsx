@@ -13,8 +13,34 @@ function Home() {
         gap={"20px"}
         alignItems={"center"}
       >
-        <Button onClick={() => navigate("/login")}>Login</Button>
-        <Button onClick={() => navigate("/signup")}>Sign up</Button>
+        <Button
+          size="large"
+          variant="text"
+          sx={{
+            fontFamily: "Caveat, cursive",
+            fontWeight: "bold",
+            backgroundColor: "#6A1B9A",
+            ":hover": { backgroundColor: "#AB47BC" },
+            color: "#fff",
+          }}
+          onClick={() => navigate("/login")}
+        >
+          Login
+        </Button>
+        <Button
+          variant="text"
+          size="large"
+          sx={{
+            fontFamily: "Caveat, cursive",
+            fontWeight: "bold",
+            backgroundColor: "#6A1B9A",
+            ":hover": { backgroundColor: "#AB47BC" },
+            color: "#fff",
+          }}
+          onClick={() => navigate("/signup")}
+        >
+          Sign up
+        </Button>
       </Box>
       <Zoom
         style={{ transitionDelay: "500ms", transitionDuration: "0.6s" }}
@@ -27,23 +53,35 @@ function Home() {
           flexDirection={"column"}
           alignItems={"center"}
         >
-          <Box display={"flex"} gap={"30px"} alignItems={"flex-end"}>
+          <Box
+            display={"flex"}
+            sx={{ gap: { xs: "10px", md: "20px", lg: "30px" } }}
+            alignItems={"flex-end"}
+          >
             <Box>
               <Typography
                 fontFamily={"Caveat, cursive"}
-                variant="h3"
+                variant={"h3"}
+                sx={{ fontSize: { xs: 18, md: 28, lg: 48 } }}
                 fontWeight={500}
               >
                 Your
               </Typography>
-              <img width={"150rem"} src={image} alt="notebook" />
+              <Box sx={{ width: { xs: 50, md: 100, lg: 120 } }}>
+                <img
+                  width={"100%"}
+                  height={"100%"}
+                  src={image}
+                  alt="notebook"
+                />
+              </Box>
             </Box>
             <Typography
               pb={1}
               fontFamily={"Caveat, cursive"}
               variant="h1"
-              fontSize={"8rem"}
               fontWeight={500}
+              sx={{ fontSize: { xs: 48, md: 98, lg: 128 } }}
             >
               Notes
             </Typography>
@@ -65,6 +103,7 @@ function Home() {
             textAlign={"center"}
             fontFamily={"Caveat, cursive"}
             variant="h3"
+            sx={{ fontSize: { xs: 18, md: 28, lg: 48 } }}
             color="initial"
           >
             Unleash Your Ideas on a Canvas 🚀
@@ -79,6 +118,7 @@ function Home() {
             fontFamily={"Caveat, cursive"}
             variant="h4"
             color="initial"
+            sx={{ fontSize: { xs: 16, md: 20, lg: 38 } }}
           >
             Take notes, draw diagrams, and explain your concepts effortlessly 💪
           </Typography>
@@ -91,10 +131,10 @@ function Home() {
             <Button
               onClick={() => navigate("/login")}
               sx={{
-                padding: "16px 48px",
+                padding: { xs: "8px 28px", md: "12px 38px", lg: "16px 48px" },
                 fontFamily: "Caveat, cursive",
                 fontWeight: "bold",
-                fontSize: 22,
+                fontSize: { xs: 18, md: 28, lg: 48 },
                 backgroundColor: "#6A1B9A",
                 ":hover": { backgroundColor: "#AB47BC" },
                 borderRadius: "100px",

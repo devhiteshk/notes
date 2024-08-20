@@ -37,7 +37,7 @@ export default function FormDialog({ type, setRerender, projectId="" }) {
                     { name },
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${token()}`,
                             "Content-Type": "application/json",
                         },
                     }
@@ -51,7 +51,7 @@ export default function FormDialog({ type, setRerender, projectId="" }) {
                     { name, projectId },
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${token()}`,
                             "Content-Type": "application/json",
                         },
                     }

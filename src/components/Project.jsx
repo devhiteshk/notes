@@ -1,4 +1,4 @@
-import { Box, Typography, Card } from "@mui/material";
+import { Box, Typography, Card, Tooltip } from "@mui/material";
 import Layout from "./Layout";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import FormDialog from "./Dialog";
@@ -6,23 +6,37 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { token } from "../utils/getToken";
+import { ArrowBack, Delete } from "@mui/icons-material";
 
 function ProjectC() {
   const [data, setData] = useState([]);
   const params = useParams();
   const navigate = useNavigate();
-  const [rerender,setRerender] = useState(false)
+  const [rerender, setRerender] = useState(false);
 
   const getProjects = async () => {
     let response = await axios.get(
       `${import.meta.env.VITE_APP_API_URL}/api/filesbyProjectId/${params.id}`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token()}` },
       }
     );
 
     if (response.status === 200) {
       setData(response.data);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    let response = await axios.delete(
+      `${import.meta.env.VITE_APP_API_URL}/api/deletefilebyFileId/${id}`,
+      {
+        headers: { Authorization: `Bearer ${token()}` },
+      }
+    );
+
+    if (response.status === 200) {
+      getProjects();
     }
   };
 
@@ -63,18 +77,42 @@ function ProjectC() {
           alignItems={"center"}
         >
           <Typography
+            onClick={() => navigate(-1)}
+            sx={{ cursor: "pointer" }}
             color="#fff"
             fontFamily={"Caveat, cursive"}
             variant="h5"
             fontWeight={600}
+            display={"flex"}
+            alignItems={"center"}
           >
-            {data?.[0]?.project?.name}
+            <ArrowBack />
+            {data?.[0]?.project?.name} 📄
           </Typography>
-          <FormDialog type={"file"} projectId={params.id} setRerender={setRerender} />
+          <FormDialog
+            type={"file"}
+            projectId={params.id}
+            setRerender={setRerender}
+          />
         </Box>
-        <Box maxWidth={"xl"} width="100%" display={"flex"} flexWrap={"wrap"} gap={"16px"}>
+        <Box
+          maxWidth={"xl"}
+          width="100%"
+          display={"flex"}
+          flexWrap={"wrap"}
+          gap={"36px"}
+          sx={{ mt: 5 }}
+        >
           {data?.map((item) => (
             <Box key={item._id} maxWidth="270px" width="100%">
+              <Box sx={{ textAlign: "right" }}>
+                <Tooltip placement="right-end" title="Delete file">
+                  <Box onClick={() => handleDelete(item._id)}>
+                    <Delete sx={{ color: "#C63C51", cursor: "pointer" }} />
+                  </Box>
+                </Tooltip>
+              </Box>
+
               <Card
                 onClick={() => navigate(`/canvas/${item._id}`)}
                 elevation={1}
@@ -90,7 +128,7 @@ function ProjectC() {
                 }}
               >
                 <FileOpenIcon
-                  sx={{ fontSize: "50px", color: "rgba(115,100,255,1)" }}
+                  sx={{ fontSize: "35px", color: "rgba(115,100,255,1)" }}
                 />
                 <Typography
                   variant="subtitle1"

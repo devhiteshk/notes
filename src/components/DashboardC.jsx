@@ -1,11 +1,12 @@
-import { Box, Typography, Card } from "@mui/material";
+import { Box, Typography, Card, Tooltip } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import Layout from "./Layout";
 import FormDialog from "./Dialog";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { token } from "../utils/getToken";
 import { useNavigate } from "react-router-dom";
+import { token } from "../utils/getToken";
+import { Delete } from "@mui/icons-material";
 
 function DashboardC() {
   const [data, setData] = useState([]);
@@ -16,12 +17,25 @@ function DashboardC() {
     let response = await axios.get(
       `${import.meta.env.VITE_APP_API_URL}/api/projects`,
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token()}` },
       }
     );
 
     if (response.status === 200) {
       setData(response.data);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    let response = await axios.delete(
+      `${import.meta.env.VITE_APP_API_URL}/api/deleteFolderById/${id}`,
+      {
+        headers: { Authorization: `Bearer ${token()}` },
+      }
+    );
+
+    if (response.status === 200) {
+      getProjects();
     }
   };
 
@@ -66,17 +80,24 @@ function DashboardC() {
             variant="h5"
             fontWeight={600}
           >
-            Folders
+            Your Folders 😍
           </Typography>
           <FormDialog type={"folder"} setRerender={setRerender} />
         </Box>
         <Box
           maxWidth={"xl"}
           width="100%"
-          sx={{ display: "flex", flexWrap: "wrap", gap: "16px" }}
+          sx={{ display: "flex", flexWrap: "wrap", gap: "16px", mt:5, pb:10 }}
         >
           {data?.map((item) => (
             <Box key={item._id} maxWidth="270px" width={"100%"}>
+               <Box sx={{ textAlign: "right" }}>
+                <Tooltip placement="right-end" title="Delete folder">
+                  <Box onClick={() => handleDelete(item._id)}>
+                    <Delete sx={{ color: "#C63C51", cursor: "pointer" }} />
+                  </Box>
+                </Tooltip>
+              </Box>
               <Card
                 onClick={() => navigate(`/folder/${item._id}`)}
                 elevation={1}
@@ -91,7 +112,7 @@ function DashboardC() {
                   cursor: "pointer",
                 }}
               >
-                <FolderIcon sx={{ fontSize: "50px", color: "#bd68d7" }} />
+                <FolderIcon sx={{ fontSize: "35px", color: "#bd68d7" }} />
                 <Typography
                   overflow={"hidden"}
                   textOverflow={"ellipsis"}

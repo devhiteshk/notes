@@ -29,7 +29,7 @@ export default function BasicMenu() {
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-        sx={{ width: "40px", height: "40px", cursor:"pointer" }}
+        sx={{ width: "40px", height: "40px", cursor:"pointer", backgroundColor:"#6b21b5" }}
       ></Avatar>
       <Menu
         id="basic-menu"
