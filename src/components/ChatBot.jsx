@@ -49,7 +49,7 @@ const ChatbotPopup = ({ handleUpdateFromChatbot }) => {
 
         // Update the Excalidraw canvas with the new elements
         if (botMessage?.elements)
-          handleUpdateFromChatbot(botMessage.elements || [{}]);
+          handleUpdateFromChatbot(botMessage.elements || []);
 
         setMessages([
           ...newMessages,
