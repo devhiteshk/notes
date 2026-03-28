@@ -165,9 +165,9 @@ export default function SignUpSide() {
                         </Button>
                         <Grid container mt={1}>
                             <Grid item xs>
-                                <Link sx={{ textDecoration: "none", cursor: "pointer" }} color={"#000"} fontFamily="Caveat, cursive" variant="body2" fontSize={16}>
+                                {/* <Link sx={{ textDecoration: "none", cursor: "pointer" }} color={"#000"} fontFamily="Caveat, cursive" variant="body2" fontSize={16}>
                                     Forgot password?
-                                </Link>
+                                </Link> */}
                             </Grid>
                             <Grid item>
                                 <Link sx={{ textDecoration: "none", cursor: "pointer" }} color={"#000"} fontFamily="Caveat, cursive" onClick={() => navigate("/login")} variant="body2" fontSize={16}>

@@ -28,9 +28,9 @@ function Copyright() {
       <Link
         fontFamily="Caveat, cursive"
         color="inherit"
-        href="https://codehoody.com/"
+        href="https://github.com/devhiteshk"
       >
-        CodeHoody
+        devHiteshK
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
