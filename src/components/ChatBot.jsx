@@ -210,6 +210,7 @@ const ChatbotPopup = ({ handleUpdateFromChatbot }) => {
                 borderRadius: 20,
                 boxShadow: "0 8px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08)",
                 overflow: "hidden",
+                fontFamily: "Inter, sans-serif",
               }}
             >
               {/* Header */}
@@ -232,10 +233,10 @@ const ChatbotPopup = ({ handleUpdateFromChatbot }) => {
                   <SmartToyIcon style={{ color: "#fff", fontSize: 20 }} />
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "Inter, sans-serif" }}>
+                  <div style={{ color: "#fff", fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif" }}>
                     AI Assistant
                   </div>
-                  <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 12 }}>
+                  <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 10 }}>
                     {loading ? "Thinking..." : "Online"}
                   </div>
                 </div>
