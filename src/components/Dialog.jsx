@@ -33,7 +33,7 @@ export default function FormDialog({ type, setRerender, projectId="" }) {
             if (type === "folder") {
                 // Create a new project (folder)
                 const response = await axios.post(
-                    `${import.meta.env.VITE_APP_API_URL}/api/projects`,
+                    `${import.meta.env.VITE_APP_API_URL}/projects`,
                     { name },
                     {
                         headers: {
@@ -47,7 +47,7 @@ export default function FormDialog({ type, setRerender, projectId="" }) {
             } else {
                 // Create a new file within a project
                 const response = await axios.post(
-                    `${import.meta.env.VITE_APP_API_URL}/api/files`,
+                    `${import.meta.env.VITE_APP_API_URL}/files`,
                     { name, projectId },
                     {
                         headers: {

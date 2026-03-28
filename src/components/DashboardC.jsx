@@ -15,7 +15,7 @@ function DashboardC() {
 
   const getProjects = async () => {
     let response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/projects`,
+      `${import.meta.env.VITE_APP_API_URL}/projects`,
       {
         headers: { Authorization: `Bearer ${token()}` },
       }
@@ -28,7 +28,7 @@ function DashboardC() {
 
   const handleDelete = async (id) => {
     let response = await axios.delete(
-      `${import.meta.env.VITE_APP_API_URL}/api/deleteFolderById/${id}`,
+      `${import.meta.env.VITE_APP_API_URL}/projects/${id}`,
       {
         headers: { Authorization: `Bearer ${token()}` },
       }

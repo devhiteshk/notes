@@ -35,7 +35,7 @@ const ChatbotPopup = ({ handleUpdateFromChatbot }) => {
 
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_APP_API_URL}/api/chat`,
+          `${import.meta.env.VITE_APP_API_URL}/chat`,
           { message: input },
           {
             headers: {
@@ -44,7 +44,7 @@ const ChatbotPopup = ({ handleUpdateFromChatbot }) => {
           }
         );
 
-        const botMessage = JSON.parse(response?.data?.response + "");
+        const botMessage = response?.data;
         console.log("botMessage", botMessage);
 
         // Update the Excalidraw canvas with the new elements

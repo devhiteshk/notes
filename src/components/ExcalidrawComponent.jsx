@@ -28,7 +28,7 @@ const ExcalidrawComponent = () => {
   const fetchInitialElements = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_URL}/api/files/${id}`,
+        `${import.meta.env.VITE_APP_API_URL}/files/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token()}`,
@@ -54,7 +54,7 @@ const ExcalidrawComponent = () => {
 
     try {
       const response = await axios.put(
-        `${import.meta.env.VITE_APP_API_URL}/api/files/${id}`,
+        `${import.meta.env.VITE_APP_API_URL}/files/${id}`,
         { content: JSON.stringify(filteredElements) },
         {
           headers: {

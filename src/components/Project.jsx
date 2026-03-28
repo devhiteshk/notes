@@ -16,7 +16,7 @@ function ProjectC() {
 
   const getProjects = async () => {
     let response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/api/filesbyProjectId/${params.id}`,
+      `${import.meta.env.VITE_APP_API_URL}/files/by-project/${params.id}`,
       {
         headers: { Authorization: `Bearer ${token()}` },
       }
@@ -29,7 +29,7 @@ function ProjectC() {
 
   const handleDelete = async (id) => {
     let response = await axios.delete(
-      `${import.meta.env.VITE_APP_API_URL}/api/deletefilebyFileId/${id}`,
+      `${import.meta.env.VITE_APP_API_URL}/files/${id}`,
       {
         headers: { Authorization: `Bearer ${token()}` },
       }
