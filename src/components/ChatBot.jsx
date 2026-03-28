@@ -100,7 +100,7 @@ const MessageBubble = ({ message, index }) => {
                     borderRadius: 4,
                     padding: "1px 5px",
                     fontSize: 12,
-                    fontFamily: "monospace",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >
                   {children}
