@@ -8,20 +8,27 @@
   box-sizing: border-box;
 }
 
+/* Make html, body, and #root fill the full viewport — kills the black bar */
+html,
+body,
+#root {
+  height: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+}
+
 html {
-  /* Prevent font scaling in landscape on iOS */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
 body {
-  /* Smooth scrolling & prevent horizontal overflow on mobile */
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Ensure images never overflow their containers */
+/* Images never overflow their containers */
 img {
   max-width: 100%;
   height: auto;
@@ -38,4 +45,3 @@ button, a, [role="button"] {
 textarea {
   resize: vertical;
 }
-
