@@ -1,147 +1,443 @@
-import { Box, Typography, Card, Tooltip } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Tooltip,
+  IconButton,
+  Skeleton,
+  Chip,
+} from "@mui/material";
+import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Layout from "./Layout";
-import FileOpenIcon from "@mui/icons-material/FileOpen";
 import FormDialog from "./Dialog";
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { token } from "../utils/getToken";
-import { ArrowBack, Delete } from "@mui/icons-material";
 
+// ─── empty state ──────────────────────────────────────────────────────────────
+function EmptyState() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      style={{ width: "100%" }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 2,
+          py: 14,
+        }}
+      >
+        <Box
+          sx={{
+            width: 80,
+            height: 80,
+            borderRadius: "24px",
+            backgroundColor: "#EEF2FF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mb: 1,
+          }}
+        >
+          <InsertDriveFileOutlinedIcon sx={{ fontSize: 40, color: "#A5B4FC" }} />
+        </Box>
+        <Typography
+          fontFamily="Poppins, sans-serif"
+          fontWeight={700}
+          fontSize={20}
+          color="#1F2937"
+        >
+          No files yet
+        </Typography>
+        <Typography
+          fontFamily="Inter, sans-serif"
+          fontSize={14}
+          color="#9CA3AF"
+          textAlign="center"
+          maxWidth={280}
+          lineHeight={1.6}
+        >
+          Create your first file in this folder to start taking notes and drawing.
+        </Typography>
+      </Box>
+    </motion.div>
+  );
+}
+
+// ─── skeleton cards ───────────────────────────────────────────────────────────
+function SkeletonCards() {
+  return (
+    <>
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <Skeleton
+          key={i}
+          variant="rounded"
+          sx={{
+            width: { xs: "100%", sm: 260, md: 280 },
+            height: 96,
+            borderRadius: "20px",
+            flexShrink: 0,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
+// ─── file card ────────────────────────────────────────────────────────────────
+const FILE_COLORS = [
+  { bg: "#EEF2FF", icon: "#A5B4FC", hover: "#E0E7FF", hoverIcon: "#6366F1", shadow: "rgba(99,102,241,0.15)"  },
+  { bg: "#F3EEFF", icon: "#C4B5FD", hover: "#EDE9FE", hoverIcon: "#7C3AED", shadow: "rgba(124,58,237,0.15)" },
+  { bg: "#F0FDFA", icon: "#5EEAD4", hover: "#CCFBF1", hoverIcon: "#14B8A6", shadow: "rgba(20,184,166,0.15)" },
+  { bg: "#FFF7ED", icon: "#FCD34D", hover: "#FEF3C7", hoverIcon: "#F59E0B", shadow: "rgba(245,158,11,0.15)" },
+  { bg: "#F0FDF4", icon: "#86EFAC", hover: "#DCFCE7", hoverIcon: "#22C55E", shadow: "rgba(34,197,94,0.15)"  },
+  { bg: "#FFF1F2", icon: "#FDA4AF", hover: "#FFE4E6", hoverIcon: "#F43F5E", shadow: "rgba(244,63,94,0.15)"  },
+];
+
+function FileCard({ item, onDelete, onClick, colorIndex }) {
+  const [hovered, setHovered] = useState(false);
+  const c = FILE_COLORS[colorIndex % FILE_COLORS.length];
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 16, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.25 }}
+      style={{ flexShrink: 0 }}
+    >
+      <Box
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        sx={{
+          position: "relative",
+          width: { xs: "100%", sm: 260, md: 280 },
+        }}
+      >
+        {/* Delete */}
+        <AnimatePresence>
+          {hovered && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.75 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.75 }}
+              transition={{ duration: 0.15 }}
+              style={{ position: "absolute", top: -10, right: -10, zIndex: 3 }}
+            >
+              <Tooltip title="Delete file" placement="top">
+                <IconButton
+                  size="small"
+                  onClick={(e) => { e.stopPropagation(); onDelete(item._id); }}
+                  sx={{
+                    backgroundColor: "#fff",
+                    border: "1.5px solid #FECACA",
+                    color: "#EF4444",
+                    width: 30,
+                    height: 30,
+                    boxShadow: "0 2px 10px rgba(239,68,68,0.2)",
+                    "&:hover": { backgroundColor: "#FEF2F2", borderColor: "#EF4444" },
+                  }}
+                >
+                  <DeleteOutlineIcon sx={{ fontSize: 15 }} />
+                </IconButton>
+              </Tooltip>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Card */}
+        <Box
+          onClick={onClick}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            p: "18px 20px",
+            borderRadius: "20px",
+            border: "1.5px solid",
+            borderColor: hovered ? c.hoverIcon + "55" : "#E9EAEC",
+            backgroundColor: hovered ? c.hover : "#fff",
+            cursor: "pointer",
+            boxShadow: hovered
+              ? `0 10px 30px ${c.shadow}`
+              : "0 2px 8px rgba(0,0,0,0.05)",
+            transition: "all 0.22s ease",
+            transform: hovered ? "translateY(-3px)" : "translateY(0)",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Icon */}
+          <Box
+            sx={{
+              width: 48,
+              height: 48,
+              borderRadius: "14px",
+              backgroundColor: c.bg,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              transition: "background 0.22s",
+            }}
+          >
+            <InsertDriveFileIcon
+              sx={{
+                fontSize: 24,
+                color: hovered ? c.hoverIcon : c.icon,
+                transition: "color 0.22s",
+              }}
+            />
+          </Box>
+
+          {/* Text */}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography
+              fontFamily="Inter, sans-serif"
+              fontWeight={600}
+              fontSize={14}
+              color="#111827"
+              sx={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", mb: 0.25 }}
+            >
+              {item.name}
+            </Typography>
+            <Typography fontFamily="Inter, sans-serif" fontSize={12} color="#9CA3AF">
+              Canvas file
+            </Typography>
+          </Box>
+
+          {/* Arrow */}
+          <ChevronRightIcon
+            sx={{
+              fontSize: 18,
+              color: hovered ? c.hoverIcon : "#D1D5DB",
+              transition: "color 0.22s, transform 0.22s",
+              transform: hovered ? "translateX(2px)" : "translateX(0)",
+              flexShrink: 0,
+            }}
+          />
+        </Box>
+      </Box>
+    </motion.div>
+  );
+}
+
+// ─── main ─────────────────────────────────────────────────────────────────────
 function ProjectC() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [rerender, setRerender] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
-  const [rerender, setRerender] = useState(false);
 
-  const getProjects = async () => {
-    let response = await axios.get(
-      `${import.meta.env.VITE_APP_API_URL}/files/by-project/${params.id}`,
-      {
-        headers: { Authorization: `Bearer ${token()}` },
-      }
-    );
-
-    if (response.status === 200) {
-      setData(response.data);
+  const getFiles = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_URL}/files/by-project/${params.id}`,
+        { headers: { Authorization: `Bearer ${token()}` } }
+      );
+      if (response.status === 200) setData(response.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    let response = await axios.delete(
-      `${import.meta.env.VITE_APP_API_URL}/files/${id}`,
-      {
-        headers: { Authorization: `Bearer ${token()}` },
-      }
-    );
-
-    if (response.status === 200) {
-      getProjects();
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_APP_API_URL}/files/${id}`,
+        { headers: { Authorization: `Bearer ${token()}` } }
+      );
+      if (response.status === 200) getFiles();
+    } catch (err) {
+      console.error(err);
     }
   };
 
   useEffect(() => {
-    try {
-      getProjects();
-    } catch (err) {
-      console.log(err);
-    }
+    getFiles();
   }, [rerender]);
 
-  console.log("data", data);
+  const folderName = data?.[0]?.project?.name;
 
   return (
     <Layout>
       <Box
-        p={"0px 20px"}
-        width={"100%"}
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        flexDirection={"column"}
-        gap={"20px"}
+        sx={{
+          px: { xs: 3, sm: 4, md: 6 },
+          pt: 5,
+          pb: 10,
+          maxWidth: "1400px",
+          mx: "auto",
+          width: "100%",
+        }}
       >
-        <Box
-          mt={"32px"}
-          padding={"10px 20px"}
-          sx={{
-            background:
-              "linear-gradient(90deg, rgba(115,100,255,1) 0%, rgba(189,8,215,1) 50%, rgba(255,0,202,1) 100%);",
-          }}
-          backgroundColor="#673ab7"
-          borderRadius={"20px"}
-          maxWidth={"md"}
-          width={"100%"}
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
+        {/* ── Hero banner ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          <Typography
-            onClick={() => navigate(-1)}
-            sx={{ cursor: "pointer" }}
-            color="#fff"
-            fontFamily={"Caveat, cursive"}
-            variant="h5"
-            fontWeight={600}
-            display={"flex"}
-            alignItems={"center"}
+          <Box
+            sx={{
+              mb: 6,
+              p: { xs: "22px 20px", md: "36px 40px" },
+              borderRadius: "24px",
+              background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 60%, #A855F7 100%)",
+              boxShadow: "0 12px 40px rgba(79,70,229,0.25)",
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { xs: "flex-start", sm: "center" },
+              justifyContent: "space-between",
+              gap: { xs: 3, sm: 2 },
+              position: "relative",
+              overflow: "hidden",
+            }}
           >
-            <ArrowBack />
-            {data?.[0]?.project?.name} 📄
-          </Typography>
-          <FormDialog
-            type={"file"}
-            projectId={params.id}
-            setRerender={setRerender}
-          />
-        </Box>
-        <Box
-          maxWidth={"xl"}
-          width="100%"
-          display={"flex"}
-          flexWrap={"wrap"}
-          gap={"36px"}
-          sx={{ mt: 5 }}
-        >
-          {data?.map((item) => (
-            <Box key={item._id} maxWidth="270px" width="100%">
-              <Box sx={{ textAlign: "right" }}>
-                <Tooltip placement="right-end" title="Delete file">
-                  <Box onClick={() => handleDelete(item._id)}>
-                    <Delete sx={{ color: "#C63C51", cursor: "pointer" }} />
-                  </Box>
-                </Tooltip>
-              </Box>
+            {/* Decorative circles */}
+            <Box sx={{ position: "absolute", width: 240, height: 240, borderRadius: "50%", border: "50px solid rgba(255,255,255,0.07)", top: -80, right: 60 }} />
+            <Box sx={{ position: "absolute", width: 160, height: 160, borderRadius: "50%", border: "36px solid rgba(255,255,255,0.06)", bottom: -60, right: -30 }} />
 
-              <Card
-                onClick={() => navigate(`/canvas/${item._id}`)}
-                elevation={1}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  gap: "10px",
-                  alignItems: "center",
-                  padding: "10px 20px",
-                  border: "0.5px solid black",
-                  color: "#000",
-                  cursor: "pointer",
-                }}
-              >
-                <FileOpenIcon
-                  sx={{ fontSize: "35px", color: "rgba(115,100,255,1)" }}
-                />
-                <Typography
-                  variant="subtitle1"
-                  overflow={"hidden"}
-                  textOverflow={"ellipsis"}
-                  fontWeight={400}
-                  fontFamily={"Inter"}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2.5, position: "relative" }}>
+              {/* Back */}
+              <Tooltip title="Back to folders">
+                <IconButton
+                  onClick={() => navigate(-1)}
+                  size="small"
+                  sx={{
+                    backgroundColor: "rgba(255,255,255,0.18)",
+                    border: "1px solid rgba(255,255,255,0.25)",
+                    color: "#fff",
+                    borderRadius: "10px",
+                    backdropFilter: "blur(8px)",
+                    "&:hover": { backgroundColor: "rgba(255,255,255,0.28)" },
+                    transition: "background 0.2s",
+                  }}
                 >
-                  {item.name}
+                  <ArrowBackIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+
+              <Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 0.5 }}>
+                  <Typography
+                    fontFamily="Poppins, sans-serif"
+                    fontWeight={700}
+                    sx={{ fontSize: { xs: 20, md: 26 }, color: "#fff" }}
+                  >
+                    {loading ? <Skeleton width={140} sx={{ bgcolor: "rgba(255,255,255,0.2)" }} /> : folderName || "Folder"}
+                  </Typography>
+                  <Chip
+                    label="Folder"
+                    size="small"
+                    sx={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      backgroundColor: "rgba(255,255,255,0.2)",
+                      color: "#fff",
+                      height: 22,
+                      borderRadius: "6px",
+                      border: "1px solid rgba(255,255,255,0.3)",
+                    }}
+                  />
+                </Box>
+                <Typography
+                  fontFamily="Inter, sans-serif"
+                  sx={{ fontSize: 14, color: "rgba(255,255,255,0.72)" }}
+                >
+                  {loading
+                    ? "Loading your files…"
+                    : `${data.length} file${data.length !== 1 ? "s" : ""} in this folder`}
                 </Typography>
-              </Card>
+              </Box>
             </Box>
-          ))}
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                backgroundColor: "rgba(255,255,255,0.18)",
+                backdropFilter: "blur(8px)",
+                borderRadius: "12px",
+                border: "1px solid rgba(255,255,255,0.25)",
+                px: 2,
+                py: 1,
+                flexShrink: 0,
+                position: "relative",
+              }}
+            >
+              <Typography
+                fontFamily="Inter, sans-serif"
+                fontWeight={600}
+                fontSize={14}
+                color="#fff"
+              >
+                New File
+              </Typography>
+              <FormDialog
+                type="file"
+                projectId={params.id}
+                setRerender={setRerender}
+              />
+            </Box>
+          </Box>
+        </motion.div>
+
+        {/* ── Section label ── */}
+        {!loading && data.length > 0 && (
+          <Typography
+            fontFamily="Inter, sans-serif"
+            fontWeight={600}
+            fontSize={12}
+            letterSpacing="0.07em"
+            sx={{ color: "#9CA3AF", textTransform: "uppercase", mb: 3 }}
+          >
+            All Files · {data.length}
+          </Typography>
+        )}
+
+        {/* ── Grid ── */}
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2.5,
+            alignItems: "flex-start",
+          }}
+        >
+          {loading ? (
+            <SkeletonCards />
+          ) : data.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <AnimatePresence>
+              {data.map((item, i) => (
+                <FileCard
+                  key={item._id}
+                  item={item}
+                  colorIndex={i}
+                  onDelete={handleDelete}
+                  onClick={() => navigate(`/canvas/${item._id}`)}
+                />
+              ))}
+            </AnimatePresence>
+          )}
         </Box>
       </Box>
     </Layout>

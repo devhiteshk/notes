@@ -12,7 +12,7 @@ import {
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
+import image from "./../assets/diary-journal-color-icon.svg";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -133,7 +133,9 @@ export default function SignupComponent() {
               justifyContent: "center",
             }}
           >
-            <NoteAltOutlinedIcon sx={{ color: "#fff", fontSize: 22 }} />
+            <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
+                        <img src={image} width="100%" height="100%" alt="Notes logo" />
+                      </Box>
           </Box>
           <Typography
             fontFamily="Poppins, sans-serif"
@@ -230,7 +232,9 @@ export default function SignupComponent() {
                 mb: 3,
               }}
             >
-              <NoteAltOutlinedIcon sx={{ color: "#7C3AED", fontSize: 26 }} />
+              <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
+                          <img src={image} width="100%" height="100%" alt="Notes logo" />
+                        </Box>
               <Typography
                 fontFamily="Poppins, sans-serif"
                 fontWeight={700}
@@ -295,7 +299,7 @@ export default function SignupComponent() {
             sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
           >
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="First name"
                   required
@@ -307,7 +311,7 @@ export default function SignupComponent() {
                   sx={fieldSx}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Last name"
                   required

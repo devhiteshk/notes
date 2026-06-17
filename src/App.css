@@ -48,9 +48,9 @@
 }
 
 .Dashboard {
-  background-color: #fff;
-  background-image: radial-gradient(#000 1px, transparent 1px),
-    radial-gradient(#000 1px, #fff 1px);
-  background-size: 80px 80px;
-  background-position: 0 0, 40px 40px;
+  background-color: #fafafa;
+  background-image: radial-gradient(rgba(124, 58, 237, 0.1) 1px, transparent 1px),
+    radial-gradient(rgba(124, 58, 237, 0.1) 1px, #fafafa 1px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
 }

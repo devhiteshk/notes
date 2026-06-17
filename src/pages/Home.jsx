@@ -8,12 +8,11 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
+import image from "./../assets/diary-journal-color-icon.svg";
 import FolderOpenOutlinedIcon from "@mui/icons-material/FolderOpenOutlined";
 import BrushOutlinedIcon from "@mui/icons-material/BrushOutlined";
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import image from "./../assets/diary-journal-color-icon.svg";
 
 // ─── animation variants ──────────────────────────────────────────────────────
 
@@ -38,7 +37,9 @@ const fadeIn = {
 
 const features = [
   {
-    icon: <NoteAltOutlinedIcon sx={{ fontSize: 32, color: "#7C3AED" }} />,
+    icon: <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
+            <img src={image} width="100%" height="100%" alt="Notes logo" />
+          </Box>,
     title: "Rich Notes",
     desc: "Write, edit, and format notes with a clean, distraction-free editor that keeps your thoughts organised.",
   },
@@ -76,8 +77,8 @@ function Home() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          px: { xs: 3, md: 6 },
-          py: 1,
+          px: { xs: 2.5, md: 6 },
+          py: 1.5,
           position: "sticky",
           top: 0,
           zIndex: 100,
@@ -88,13 +89,13 @@ function Home() {
       >
         {/* Logo */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Box sx={{ width: 32, height: 32 }}>
+          <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
             <img src={image} width="100%" height="100%" alt="Notes logo" />
           </Box>
           <Typography
             fontFamily="Caveat, cursive"
             fontWeight={700}
-            fontSize={26}
+            fontSize={{ xs: 22, md: 26 }}
             sx={{ color: "#1a1a2e", lineHeight: 1 }}
           >
             Notes
@@ -102,16 +103,18 @@ function Home() {
         </Box>
 
         {/* Nav actions */}
-        <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
+        <Box sx={{ display: "flex", gap: { xs: 1, md: 1.5 }, alignItems: "center" }}>
           <Button
             variant="text"
             onClick={() => navigate("/login")}
             sx={{
               fontFamily: "Inter, sans-serif",
               fontWeight: 500,
-              fontSize: 14,
+              fontSize: { xs: 13, md: 14 },
               color: "#4B5563",
               textTransform: "none",
+              minWidth: "auto",
+              px: { xs: 1, md: 1.5 },
               "&:hover": { color: "#7C3AED", background: "transparent" },
             }}
           >
@@ -123,20 +126,21 @@ function Home() {
             sx={{
               fontFamily: "Inter, sans-serif",
               fontWeight: 600,
-              fontSize: 14,
+              fontSize: { xs: 12, md: 14 },
               textTransform: "none",
               backgroundColor: "#7C3AED",
               borderRadius: "10px",
-              px: 2,
-              py: 0.2,
+              px: { xs: 1.5, md: 2 },
+              py: 0.75,
               boxShadow: "none",
+              whiteSpace: "nowrap",
               "&:hover": {
                 backgroundColor: "#6D28D9",
                 boxShadow: "0 4px 14px rgba(124,58,237,0.35)",
               },
             }}
           >
-            Get started free
+            Get started
           </Button>
         </Box>
       </Box>
@@ -155,14 +159,16 @@ function Home() {
             sx={{
               mb: 4,
               fontFamily: "Inter, sans-serif",
-              fontSize: 13,
+              fontSize: { xs: 11, sm: 13 },
               fontWeight: 500,
               backgroundColor: "#F3EEFF",
               color: "#7C3AED",
               border: "1px solid #DDD6FE",
               borderRadius: "100px",
               px: 1,
-              height: 34,
+              height: { xs: 30, sm: 34 },
+              maxWidth: "100%",
+              "& .MuiChip-label": { px: { xs: 1, sm: 1.5 } },
             }}
           />
         </motion.div>
@@ -179,8 +185,8 @@ function Home() {
             fontFamily="Poppins, sans-serif"
             fontWeight={700}
             sx={{
-              fontSize: { xs: 36, sm: 52, md: 68 },
-              lineHeight: 1.1,
+              fontSize: { xs: 32, sm: 48, md: 64 },
+              lineHeight: 1.12,
               letterSpacing: "-0.03em",
               color: "#0F0A1E",
               mb: 3,
@@ -190,15 +196,13 @@ function Home() {
             <Box
               component="span"
               sx={{
-                background:
-                  "linear-gradient(135deg, #7C3AED 0%, #C084FC 100%)",
+                background: "linear-gradient(135deg, #7C3AED 0%, #C084FC 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
             >
               draw your thoughts
-            </Box>
-            <br />
+            </Box>{" "}
             and stay organised.
           </Typography>
         </motion.div>
@@ -238,7 +242,9 @@ function Home() {
               display: "flex",
               gap: 2,
               justifyContent: "center",
-              flexWrap: "wrap",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: "center",
+              px: { xs: 2, sm: 0 },
             }}
           >
             <Button
@@ -246,15 +252,17 @@ function Home() {
               size="large"
               endIcon={<ArrowForwardIcon />}
               onClick={() => navigate("/signup")}
+              fullWidth={false}
               sx={{
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 600,
-                fontSize: 16,
+                fontSize: { xs: 15, md: 16 },
                 textTransform: "none",
                 backgroundColor: "#7C3AED",
                 borderRadius: "12px",
-                px: 4,
+                px: { xs: 3, md: 4 },
                 py: 1.5,
+                width: { xs: "100%", sm: "auto" },
                 boxShadow: "0 4px 20px rgba(124,58,237,0.4)",
                 "&:hover": {
                   backgroundColor: "#6D28D9",
@@ -273,13 +281,14 @@ function Home() {
               sx={{
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 600,
-                fontSize: 16,
+                fontSize: { xs: 15, md: 16 },
                 textTransform: "none",
                 borderColor: "#D1D5DB",
                 color: "#374151",
                 borderRadius: "12px",
-                px: 4,
+                px: { xs: 3, md: 4 },
                 py: 1.5,
+                width: { xs: "100%", sm: "auto" },
                 "&:hover": {
                   borderColor: "#7C3AED",
                   color: "#7C3AED",

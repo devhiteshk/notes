@@ -166,20 +166,23 @@ const ChatbotPopup = ({ handleUpdateFromChatbot }) => {
     }
   };
 
+  // Detect mobile via window width
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 480;
+
   return (
     <>
       {/* FAB trigger */}
       <motion.div
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
-        style={{ position: "fixed", bottom: 70, right: 17, zIndex: 20 }}
+        style={{ position: "fixed", bottom: 20, right: 16, zIndex: 20 }}
       >
         <IconButton
           onClick={() => setOpen(true)}
           style={{
             background: "linear-gradient(135deg, #7364ff, #bd08d7)",
-            borderRadius: 12,
-            padding: 10,
+            borderRadius: 14,
+            padding: 12,
             boxShadow: "0 4px 20px rgba(115,100,255,0.45)",
           }}
         >
@@ -190,155 +193,164 @@ const ChatbotPopup = ({ handleUpdateFromChatbot }) => {
       {/* Chat panel */}
       <AnimatePresence>
         {open && (
-          <>
-            {/* Panel */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.92, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.92, y: 20 }}
-              transition={{ type: "spring", stiffness: 320, damping: 28 }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 20 }}
+            transition={{ type: "spring", stiffness: 320, damping: 28 }}
+            style={{
+              position: "fixed",
+              // On mobile: sit just above the FAB; on desktop: 90px from bottom
+              bottom: isMobile ? 80 : 90,
+              right: isMobile ? 8 : 16,
+              // On mobile: fill most of the screen width; on desktop: fixed 380px
+              width: isMobile ? "calc(100vw - 16px)" : 380,
+              // On mobile: taller to use available space
+              height: isMobile ? "65vh" : 540,
+              maxHeight: "calc(100vh - 100px)",
+              background: "#fff",
+              zIndex: 1300,
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: 20,
+              boxShadow: "0 8px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08)",
+              overflow: "hidden",
+              fontFamily: "Inter, sans-serif",
+            }}
+          >
+            {/* Header */}
+            <div
               style={{
-                position: "fixed",
-                bottom: 130,
-                right: 17,
-                width: 380,
-                height: 540,
-                background: "#fff",
-                zIndex: 1300,
+                padding: "10px 16px",
+                background: "linear-gradient(135deg, #7364ff 0%, #bd08d7 60%, #ff00ca 100%)",
                 display: "flex",
-                flexDirection: "column",
-                borderRadius: 20,
-                boxShadow: "0 8px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08)",
-                overflow: "hidden",
-                fontFamily: "Inter, sans-serif",
+                alignItems: "center",
+                gap: 12,
+                flexShrink: 0,
               }}
             >
-              {/* Header */}
               <div
                 style={{
-                  padding: "8px 16px",
-                  background: "linear-gradient(135deg, #7364ff 0%, #bd08d7 60%, #ff00ca 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
+                  width: 36, height: 36, borderRadius: "50%",
+                  background: "rgba(255,255,255,0.2)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0,
                 }}
               >
+                <SmartToyIcon style={{ color: "#fff", fontSize: 20 }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ color: "#fff", fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif" }}>
+                  AI Assistant
+                </div>
+                <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 11 }}>
+                  {loading ? "Thinking..." : "Online"}
+                </div>
+              </div>
+              <IconButton onClick={() => setOpen(false)} size="small" style={{ color: "#fff", flexShrink: 0 }}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </div>
+
+            {/* Messages */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: "16px",
+                display: "flex",
+                flexDirection: "column",
+                background: "#fafafa",
+                WebkitOverflowScrolling: "touch",
+              }}
+            >
+              {messages.length === 0 && (
                 <div
                   style={{
-                    width: 36, height: 36, borderRadius: "50%",
-                    background: "rgba(255,255,255,0.2)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flex: 1, display: "flex", flexDirection: "column",
+                    alignItems: "center", justifyContent: "center",
+                    color: "#94a3b8", gap: 12, textAlign: "center",
                   }}
                 >
-                  <SmartToyIcon style={{ color: "#fff", fontSize: 20 }} />
+                  <SmartToyIcon style={{ fontSize: 48, opacity: 0.3 }} />
+                  <div style={{ fontSize: 14 }}>Ask me anything about your canvas</div>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ color: "#fff", fontWeight: 600, fontSize: 14, fontFamily: "Inter, sans-serif" }}>
-                    AI Assistant
-                  </div>
-                  <div style={{ color: "rgba(255,255,255,0.75)", fontSize: 10 }}>
-                    {loading ? "Thinking..." : "Online"}
-                  </div>
-                </div>
-                <IconButton onClick={() => setOpen(false)} size="small" style={{ color: "#fff" }}>
-                  <CloseIcon fontSize="small" />
-                </IconButton>
-              </div>
+              )}
+              {messages.map((msg, i) => (
+                <MessageBubble key={i} message={msg} index={i} />
+              ))}
+              {loading && <TypingIndicator />}
+              <div ref={messagesEndRef} />
+            </div>
 
-              {/* Messages */}
-              <div
+            {/* Input */}
+            <div
+              style={{
+                padding: "10px 12px",
+                borderTop: "1px solid #e2e8f0",
+                background: "#fff",
+                display: "flex",
+                gap: 8,
+                alignItems: "flex-end",
+                flexShrink: 0,
+              }}
+            >
+              <textarea
+                rows={1}
+                value={input}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  e.target.style.height = "auto";
+                  e.target.style.height = Math.min(e.target.scrollHeight, 100) + "px";
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                placeholder="Message AI… (Shift+Enter for newline)"
                 style={{
-                  flex: 1, overflowY: "auto", padding: "20px 16px",
-                  display: "flex", flexDirection: "column",
-                  background: "#fafafa",
+                  flex: 1,
+                  resize: "none",
+                  border: "1.5px solid #e2e8f0",
+                  borderRadius: 12,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  fontFamily: "Inter, sans-serif",
+                  outline: "none",
+                  lineHeight: 1.5,
+                  background: "#f8fafc",
+                  color: "#1e293b",
+                  transition: "border-color 0.2s",
+                  overflowY: "hidden",
+                  minHeight: 42,
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#7364ff")}
+                onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={sendMessage}
+                disabled={!input.trim() || loading}
+                style={{
+                  width: 42, height: 42,
+                  borderRadius: 12,
+                  border: "none",
+                  cursor: input.trim() && !loading ? "pointer" : "not-allowed",
+                  background: input.trim() && !loading
+                    ? "linear-gradient(135deg, #7364ff, #bd08d7)"
+                    : "#e2e8f0",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0,
+                  transition: "background 0.2s",
                 }}
               >
-                {messages.length === 0 && (
-                  <div
-                    style={{
-                      flex: 1, display: "flex", flexDirection: "column",
-                      alignItems: "center", justifyContent: "center",
-                      color: "#94a3b8", gap: 12, textAlign: "center",
-                    }}
-                  >
-                    <SmartToyIcon style={{ fontSize: 48, opacity: 0.3 }} />
-                    <div style={{ fontSize: 14 }}>Ask me anything about your canvas</div>
-                  </div>
-                )}
-                {messages.map((msg, i) => (
-                  <MessageBubble key={i} message={msg} index={i} />
-                ))}
-                {loading && <TypingIndicator />}
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* Input */}
-              <div
-                style={{
-                  padding: "12px 16px",
-                  borderTop: "1px solid #e2e8f0",
-                  background: "#fff",
-                  display: "flex",
-                  gap: 8,
-                  alignItems: "center",
-                }}
-              >
-                <textarea
-                  rows={2}
-                  value={input}
-                  onChange={(e) => {
-                    setInput(e.target.value);
-                    e.target.style.height = "auto";
-                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px";
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      sendMessage();
-                    }
-                  }}
-                  placeholder="Message AI assistant... (Shift+Enter for newline)"
-                  style={{
-                    flex: 1,
-                    resize: "none",
-                    border: "1.5px solid #e2e8f0",
-                    borderRadius: 12,
-                    padding: "10px 14px",
-                    fontSize: 14,
-                    fontFamily: "Inter, sans-serif",
-                    outline: "none",
-                    lineHeight: 1.5,
-                    background: "#f8fafc",
-                    color: "#1e293b",
-                    transition: "border-color 0.2s",
-                    overflowY: "hidden",
-                  }}
-                  onFocus={(e) => (e.target.style.borderColor = "#7364ff")}
-                  onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
-                />
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={sendMessage}
-                  disabled={!input.trim() || loading}
-                  style={{
-                    width: 40, height: 40,
-                    borderRadius: 12,
-                    border: "none",
-                    cursor: input.trim() && !loading ? "pointer" : "not-allowed",
-                    background: input.trim() && !loading
-                      ? "linear-gradient(135deg, #7364ff, #bd08d7)"
-                      : "#e2e8f0",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    flexShrink: 0,
-                    transition: "background 0.2s",
-                  }}
-                >
-                  <SendIcon style={{ fontSize: 18, color: input.trim() && !loading ? "#fff" : "#94a3b8" }} />
-                </motion.button>
-              </div>
-            </motion.div>
-          </>
+                <SendIcon style={{ fontSize: 18, color: input.trim() && !loading ? "#fff" : "#94a3b8" }} />
+              </motion.button>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
