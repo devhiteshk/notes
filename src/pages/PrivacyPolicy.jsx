@@ -117,7 +117,7 @@ export default function PrivacyPolicy() {
             <img src={image} width="100%" height="100%" alt="Notes logo" />
           </Box>
           <Typography fontFamily="Caveat, cursive" fontWeight={700} fontSize={24} sx={{ color: "#1a1a2e" }}>
-            Notes
+            Notes <span style={{fontSize: 10}}> by HivarSoft </span>
           </Typography>
         </Box>
         <Box

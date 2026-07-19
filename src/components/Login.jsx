@@ -102,8 +102,8 @@ export default function LoginComponent() {
               <img src={image} width="100%" height="100%" alt="Notes logo" />
             </Box>
           </Box>
-          <Typography fontFamily="Poppins, sans-serif" fontWeight={700} fontSize={22} sx={{ color: "#fff" }}>
-            Notes
+          <Typography fontFamily="Caveat, cursive" fontWeight={700} fontSize={22} sx={{ color: "#fff" }}>
+            Notes <span style={{fontSize: 10}}> by HivarSoft </span>
           </Typography>
         </Box>
 
@@ -276,7 +276,7 @@ export default function LoginComponent() {
             fontFamily="Inter, sans-serif"
             sx={{ mt: 4, fontSize: 12, color: "#D1D5DB", textAlign: "center" }}
           >
-            © {new Date().getFullYear()} Notes · Built with ♥
+            © {new Date().getFullYear()} Notes by HivarSoft · Built with ♥
           </Typography>
         </motion.div>
       </Box>
