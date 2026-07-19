@@ -88,7 +88,7 @@ function Home() {
         }}
       >
         {/* Logo */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box onClick={()=>navigate("/")} sx={{ display: "flex", alignItems: "center", gap: 1, cursor:'pointer' }}>
           <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
             <img src={image} width="100%" height="100%" alt="Notes logo" />
           </Box>
@@ -122,7 +122,7 @@ function Home() {
           </Button>
           <Button
             variant="contained"
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/login")}
             sx={{
               fontFamily: "Inter, sans-serif",
               fontWeight: 600,
@@ -251,7 +251,7 @@ function Home() {
               variant="contained"
               size="large"
               endIcon={<ArrowForwardIcon />}
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/login")}
               fullWidth={false}
               sx={{
                 fontFamily: "Inter, sans-serif",
@@ -511,7 +511,7 @@ function Home() {
               variant="contained"
               size="large"
               endIcon={<ArrowForwardIcon />}
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/login")}
               sx={{
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 600,
@@ -550,9 +550,14 @@ function Home() {
         <Typography
           fontFamily="Inter, sans-serif"
           fontSize={13}
-          sx={{ color: "#9CA3AF" }}
+          sx={{ color: "#9CA3AF", mb: 1 }}
         >
-          © {new Date().getFullYear()} Notes · Built with ♥
+          © {new Date().getFullYear()} Notes · @HivarSoft All Rights Reserved · Built with ♥
+        </Typography>
+        <Typography fontFamily="Inter, sans-serif" fontSize={12} color="#D1D5DB">
+          <a href="/privacy-policy" style={{ color: "#876afaff", textDecoration: "none" }}>Privacy Policy</a>
+          {" · "}
+          <a href="/terms-of-service" style={{ color: "#876afaff", textDecoration: "none" }}>Terms of Service</a>
         </Typography>
       </Box>
     </Box>
