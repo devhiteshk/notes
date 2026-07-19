@@ -1,42 +1,31 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  InputAdornment,
-  Link,
-  TextField,
-  Typography,
-  Alert,
-} from "@mui/material";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { Box, Button, Divider, Typography, Alert } from "@mui/material";
 import image from "./../assets/diary-journal-color-icon.svg";
-import { useNavigate } from "react-router-dom";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { motion } from "framer-motion";
-import axios from "axios";
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-// ─── field styles ─────────────────────────────────────────────────────────────
-const fieldSx = {
-  "& .MuiOutlinedInput-root": {
-    borderRadius: "12px",
-    fontFamily: "Inter, sans-serif",
-    fontSize: 15,
-    backgroundColor: "#FAFAFA",
-    "& fieldset": { borderColor: "#E5E7EB" },
-    "&:hover fieldset": { borderColor: "#A78BFA" },
-    "&.Mui-focused fieldset": { borderColor: "#7C3AED", borderWidth: "2px" },
-  },
-  "& .MuiInputLabel-root": {
-    fontFamily: "Inter, sans-serif",
-    fontSize: 14,
-    color: "#6B7280",
-    "&.Mui-focused": { color: "#7C3AED" },
-  },
-};
+// ─── GitHub icon (inline SVG — no extra dependency) ───────────────────────────
+function GitHubIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.37 0 0 5.373 0 12c0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.3-5.466-1.334-5.466-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23a11.51 11.51 0 0 1 3.003-.404c1.02.005 2.047.138 3.003.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.804 5.625-5.476 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 21.796 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+    </svg>
+  );
+}
 
-// ─── left panel decoration dots ───────────────────────────────────────────────
+// ─── Google icon ──────────────────────────────────────────────────────────────
+function GoogleIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+    </svg>
+  );
+}
+
+// ─── decoration dot ───────────────────────────────────────────────────────────
 function Dot({ size, top, left, opacity = 0.15 }) {
   return (
     <Box
@@ -48,44 +37,32 @@ function Dot({ size, top, left, opacity = 0.15 }) {
         backgroundColor: `rgba(255,255,255,${opacity})`,
         top,
         left,
+        pointerEvents: "none",
       }}
     />
   );
 }
 
+const perks = [
+  "Sign in once, access from any device",
+  "No passwords to remember or reset",
+  "Your notes stay private and secure",
+  "Powered by trusted OAuth providers",
+];
+
+const API = import.meta.env.VITE_APP_API_URL;
+
 // ─── component ────────────────────────────────────────────────────────────────
 export default function LoginComponent() {
-  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const oauthError = searchParams.get("error");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const handleGoogle = () => {
+    window.location.href = `${API}/auth/google`;
+  };
 
-  const handleSignIn = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_APP_API_URL}/auth/login`,
-        { email, password }
-      );
-
-      if (response.status === 200) {
-        window.localStorage.setItem("token", response.data.token);
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      const msg =
-        err?.response?.data?.message ||
-        "Invalid email or password. Please try again.";
-      setError(msg);
-    } finally {
-      setLoading(false);
-    }
+  const handleGitHub = () => {
+    window.location.href = `${API}/auth/github`;
   };
 
   return (
@@ -95,7 +72,8 @@ export default function LoginComponent() {
         sx={{
           display: { xs: "none", md: "flex" },
           flex: "0 0 45%",
-          background: "linear-gradient(145deg, #5B21B6 0%, #7C3AED 45%, #A855F7 100%)",
+          background:
+            "linear-gradient(145deg, #5B21B6 0%, #7C3AED 45%, #A855F7 100%)",
           flexDirection: "column",
           justifyContent: "space-between",
           p: 6,
@@ -103,7 +81,6 @@ export default function LoginComponent() {
           overflow: "hidden",
         }}
       >
-        {/* decorative circles */}
         <Dot size={320} top={-80} left={-80} />
         <Dot size={200} top="35%" left="60%" opacity={0.08} />
         <Dot size={150} top="75%" left={-40} opacity={0.1} />
@@ -122,15 +99,10 @@ export default function LoginComponent() {
             }}
           >
             <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
-                        <img src={image} width="100%" height="100%" alt="Notes logo" />
-                      </Box>
+              <img src={image} width="100%" height="100%" alt="Notes logo" />
+            </Box>
           </Box>
-          <Typography
-            fontFamily="Poppins, sans-serif"
-            fontWeight={700}
-            fontSize={22}
-            sx={{ color: "#fff" }}
-          >
+          <Typography fontFamily="Poppins, sans-serif" fontWeight={700} fontSize={22} sx={{ color: "#fff" }}>
             Notes
           </Typography>
         </Box>
@@ -140,13 +112,7 @@ export default function LoginComponent() {
           <Typography
             fontFamily="Poppins, sans-serif"
             fontWeight={700}
-            sx={{
-              fontSize: { md: 36, lg: 44 },
-              color: "#fff",
-              lineHeight: 1.2,
-              mb: 2,
-              letterSpacing: "-0.02em",
-            }}
+            sx={{ fontSize: { md: 36, lg: 44 }, color: "#fff", lineHeight: 1.2, mb: 3, letterSpacing: "-0.02em" }}
           >
             Welcome back.
             <br />
@@ -154,31 +120,34 @@ export default function LoginComponent() {
             <br />
             are waiting.
           </Typography>
-          <Typography
-            fontFamily="Inter, sans-serif"
-            sx={{ color: "rgba(255,255,255,0.7)", fontSize: 16, lineHeight: 1.6 }}
-          >
-            Pick up right where you left off — notes, folders, canvases, all in one place.
-          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+            {perks.map((perk) => (
+              <Box key={perk} sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <CheckCircleOutlineIcon sx={{ color: "rgba(255,255,255,0.8)", fontSize: 20 }} />
+                <Typography fontFamily="Inter, sans-serif" sx={{ color: "rgba(255,255,255,0.85)", fontSize: 15 }}>
+                  {perk}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
         </Box>
 
         {/* Bottom quote */}
-        <Box sx={{ position: "relative" }}>
-          <Typography
-            fontFamily="Inter, sans-serif"
-            sx={{
-              color: "rgba(255,255,255,0.5)",
-              fontSize: 13,
-              borderLeft: "2px solid rgba(255,255,255,0.25)",
-              pl: 2,
-            }}
-          >
-            &ldquo;The faintest ink is more powerful than the strongest memory.&rdquo;
-          </Typography>
-        </Box>
+        <Typography
+          fontFamily="Inter, sans-serif"
+          sx={{
+            color: "rgba(255,255,255,0.5)",
+            fontSize: 13,
+            borderLeft: "2px solid rgba(255,255,255,0.25)",
+            pl: 2,
+            position: "relative",
+          }}
+        >
+          &ldquo;The faintest ink is more powerful than the strongest memory.&rdquo;
+        </Typography>
       </Box>
 
-      {/* ── Right form panel ── */}
+      {/* ── Right panel ── */}
       <Box
         sx={{
           flex: 1,
@@ -196,155 +165,116 @@ export default function LoginComponent() {
           transition={{ duration: 0.5, ease: "easeOut" }}
           style={{ width: "100%", maxWidth: 400 }}
         >
-          {/* Header */}
-          <Box sx={{ mb: 4 }}>
-            {/* Mobile logo */}
-            <Box
-              sx={{
-                display: { xs: "flex", md: "none" },
-                alignItems: "center",
-                gap: 1,
-                mb: 3,
-              }}
-            >
-              <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
-                          <img src={image} width="100%" height="100%" alt="Notes logo" />
-                        </Box>
-              <Typography
-                fontFamily="Poppins, sans-serif"
-                fontWeight={700}
-                fontSize={20}
-                sx={{ color: "#0F0A1E" }}
-              >
-                Notes
-              </Typography>
+          {/* Mobile logo */}
+          <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", gap: 1, mb: 4 }}>
+            <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
+              <img src={image} width="100%" height="100%" alt="Notes logo" />
             </Box>
+            <Typography fontFamily="Poppins, sans-serif" fontWeight={700} fontSize={20} sx={{ color: "#0F0A1E" }}>
+              Notes
+            </Typography>
+          </Box>
 
+          {/* Heading */}
+          <Box sx={{ mb: 5 }}>
             <Typography
               fontFamily="Poppins, sans-serif"
               fontWeight={700}
               sx={{ fontSize: { xs: 26, md: 32 }, color: "#0F0A1E", mb: 1, letterSpacing: "-0.02em" }}
             >
-              Sign in
+              Sign in to Notes
             </Typography>
-            <Typography
-              fontFamily="Inter, sans-serif"
-              sx={{ fontSize: 15, color: "#6B7280" }}
-            >
-              Don&#39;t have an account?{" "}
-              <Link
-                onClick={() => navigate("/signup")}
-                sx={{
-                  color: "#7C3AED",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  "&:hover": { textDecoration: "underline" },
-                }}
-              >
-                Sign up free
-              </Link>
+            <Typography fontFamily="Inter, sans-serif" sx={{ fontSize: 15, color: "#6B7280" }}>
+              Use your GitHub or Google account — no password needed.
             </Typography>
           </Box>
 
-          {/* Error alert */}
-          {error && (
-            <Alert
-              severity="error"
-              sx={{
-                mb: 2.5,
-                borderRadius: "12px",
-                fontFamily: "Inter, sans-serif",
-                fontSize: 14,
-              }}
-            >
-              {error}
+          {/* OAuth error */}
+          {oauthError && (
+            <Alert severity="error" sx={{ mb: 3, borderRadius: "12px", fontFamily: "Inter, sans-serif", fontSize: 14 }}>
+              {oauthError === "oauth_failed" || oauthError === "google_failed" || oauthError === "github_failed"
+                ? "Sign-in failed. Please try again."
+                : "Something went wrong. Please try again."}
             </Alert>
           )}
 
-          {/* Form */}
-          <Box
-            component="form"
-            onSubmit={handleSignIn}
-            sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
-          >
-            <TextField
-              label="Email address"
-              type="email"
-              required
-              fullWidth
-              autoComplete="email"
-              autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              sx={fieldSx}
-            />
-
-            <TextField
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              required
-              fullWidth
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              sx={fieldSx}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword((v) => !v)}
-                      edge="end"
-                      size="small"
-                      sx={{ color: "#9CA3AF" }}
-                    >
-                      {showPassword ? (
-                        <VisibilityOffOutlinedIcon fontSize="small" />
-                      ) : (
-                        <VisibilityOutlinedIcon fontSize="small" />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
+          {/* OAuth buttons */}
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {/* GitHub */}
             <Button
-              type="submit"
               fullWidth
               variant="contained"
-              disabled={loading}
-              endIcon={!loading && <ArrowForwardIcon />}
+              onClick={handleGitHub}
+              startIcon={<GitHubIcon size={20} />}
               sx={{
-                mt: 0.5,
                 py: 1.5,
                 fontFamily: "Inter, sans-serif",
                 fontWeight: 600,
-                fontSize: 16,
+                fontSize: 15,
                 textTransform: "none",
-                backgroundColor: "#7C3AED",
+                backgroundColor: "#24292F",
                 borderRadius: "12px",
-                boxShadow: "0 4px 14px rgba(124,58,237,0.35)",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
                 "&:hover": {
-                  backgroundColor: "#6D28D9",
-                  boxShadow: "0 6px 20px rgba(124,58,237,0.5)",
-                },
-                "&:disabled": {
-                  backgroundColor: "#C4B5FD",
-                  color: "#fff",
-                  boxShadow: "none",
+                  backgroundColor: "#1c2128",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
                 },
                 transition: "all 0.2s ease",
               }}
             >
-              {loading ? "Signing in…" : "Sign in"}
+              Continue with GitHub
+            </Button>
+
+            <Divider sx={{ color: "#9CA3AF", fontSize: 12, fontFamily: "Inter, sans-serif" }}>or</Divider>
+
+            {/* Google */}
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleGoogle}
+              startIcon={<GoogleIcon size={20} />}
+              sx={{
+                py: 1.5,
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 600,
+                fontSize: 15,
+                textTransform: "none",
+                borderColor: "#E5E7EB",
+                color: "#374151",
+                borderRadius: "12px",
+                backgroundColor: "#fff",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                "&:hover": {
+                  borderColor: "#D1D5DB",
+                  backgroundColor: "#F9FAFB",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                },
+                transition: "all 0.2s ease",
+              }}
+            >
+              Continue with Google
             </Button>
           </Box>
 
-          {/* Footer */}
+          {/* Fine print */}
           <Typography
             fontFamily="Inter, sans-serif"
-            sx={{ mt: 5, fontSize: 12, color: "#D1D5DB", textAlign: "center" }}
+            sx={{ mt: 4, fontSize: 12, color: "#9CA3AF", textAlign: "center", lineHeight: 1.7 }}
+          >
+            By continuing, you agree to our{" "}
+            <a href="/terms-of-service" style={{ color: "#7C3AED", textDecoration: "none" }}>
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="/privacy-policy" style={{ color: "#7C3AED", textDecoration: "none" }}>
+              Privacy Policy
+            </a>
+            .
+          </Typography>
+
+          <Typography
+            fontFamily="Inter, sans-serif"
+            sx={{ mt: 4, fontSize: 12, color: "#D1D5DB", textAlign: "center" }}
           >
             © {new Date().getFullYear()} Notes · Built with ♥
           </Typography>

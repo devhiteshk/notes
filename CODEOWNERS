@@ -5,20 +5,20 @@
 # More info: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 # Global owner — fallback for everything not matched below
-*                   @devhiteshk
+*                   @HivarSoft
 
 # Community health files
-/README.md          @devhiteshk
-/CONTRIBUTING.md    @devhiteshk
-/CODE_OF_CONDUCT.md @devhiteshk
-/SECURITY.md        @devhiteshk
-/LICENSE            @devhiteshk
+/README.md          @HivarSoft
+/CONTRIBUTING.md    @HivarSoft
+/CODE_OF_CONDUCT.md @HivarSoft
+/SECURITY.md        @HivarSoft
+/LICENSE            @HivarSoft
 
 # GitHub config
-/.github/           @devhiteshk
+/.github/           @HivarSoft
 
 # Source code
-/src/               @devhiteshk
+/src/               @HivarSoft
 
 # CI/CD
-/.github/workflows/ @devhiteshk
+/.github/workflows/ @HivarSoft
