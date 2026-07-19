@@ -90,7 +90,7 @@ function Home() {
         {/* Logo */}
         <Box onClick={()=>navigate("/")} sx={{ display: "flex", alignItems: "center", gap: 1, cursor:'pointer' }}>
           <Box sx={{ width: 22, height: 22, flexShrink: 0 }}>
-            <img src={image} width="100%" height="100%" alt="Notes logo" />
+            <img src={image} width="100%" height="100%" alt="Notes by HivarSoft logo" />
           </Box>
           <Typography
             fontFamily="Caveat, cursive"
@@ -98,7 +98,7 @@ function Home() {
             fontSize={{ xs: 22, md: 26 }}
             sx={{ color: "#1a1a2e", lineHeight: 1 }}
           >
-            Notes
+            Notes by HivarSoft
           </Typography>
         </Box>
 
@@ -155,7 +155,7 @@ function Home() {
           custom={0.1}
         >
           <Chip
-            label="✨ Your second brain, beautifully organised"
+            label="✨ Notes by HivarSoft — your second brain, beautifully organised"
             sx={{
               mb: 4,
               fontFamily: "Inter, sans-serif",
@@ -220,14 +220,59 @@ function Home() {
               fontSize: { xs: 16, md: 20 },
               color: "#6B7280",
               lineHeight: 1.7,
-              mb: 5,
+              mb: 3,
               maxWidth: 560,
               mx: "auto",
             }}
           >
-            Notes brings together rich text, infinite canvas sketching, smart
-            folders, and an AI assistant — all in one place.
+            Notes by HivarSoft brings together rich text editing, infinite
+            canvas sketching, smart folders, and an AI assistant — all in one
+            free, personal productivity app.
           </Typography>
+        </motion.div>
+
+        {/* App purpose — visible description for OAuth verification */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={0.48}
+        >
+          <Box
+            sx={{
+              maxWidth: 600,
+              mx: "auto",
+              mb: 5,
+              p: 3,
+              borderRadius: "16px",
+              backgroundColor: "#F9FAFB",
+              border: "1px solid #E5E7EB",
+              textAlign: "left",
+            }}
+          >
+            <Typography
+              fontFamily="Inter, sans-serif"
+              fontWeight={600}
+              fontSize={14}
+              color="#374151"
+              mb={1.5}
+            >
+              What is Notes by HivarSoft?
+            </Typography>
+            <Typography
+              fontFamily="Inter, sans-serif"
+              fontSize={14}
+              color="#6B7280"
+              lineHeight={1.8}
+            >
+              Notes by HivarSoft is a free personal productivity application
+              that lets you write and organise notes in folders, sketch
+              diagrams and flowcharts on an infinite canvas, and get help from
+              a built-in AI assistant. Sign in securely with your Google or
+              GitHub account — no password required. Your notes are private
+              and only accessible to you.
+            </Typography>
+          </Box>
         </motion.div>
 
         {/* CTAs */}
@@ -552,7 +597,7 @@ function Home() {
           fontSize={13}
           sx={{ color: "#9CA3AF", mb: 1 }}
         >
-          © {new Date().getFullYear()} Notes · @HivarSoft All Rights Reserved · Built with ♥
+          © {new Date().getFullYear()} Notes by HivarSoft · All Rights Reserved · Built with ♥
         </Typography>
         <Typography fontFamily="Inter, sans-serif" fontSize={12} color="#D1D5DB">
           <a href="/privacy-policy" style={{ color: "#876afaff", textDecoration: "none" }}>Privacy Policy</a>
