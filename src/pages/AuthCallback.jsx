@@ -2,34 +2,33 @@
  * AuthCallback.jsx
  *
  * Handles the redirect from the backend after a successful OAuth login.
- * The backend redirects to /auth/callback#token=<jwt>
- * We read the token from the URL hash (never hits the server), store it,
- * then navigate to the dashboard.
+ * The backend redirects to /auth/callback?token=<jwt>
+ * We read the token from the query string, store it in localStorage,
+ * clear it from the URL, then navigate to the dashboard.
  */
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, CircularProgress, Typography } from "@mui/material";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const hash = window.location.hash; // e.g. "#token=eyJ..."
-    const params = new URLSearchParams(hash.slice(1)); // strip leading "#"
-    const token = params.get("token");
+    const token = searchParams.get("token");
 
     if (token) {
       localStorage.setItem("token", token);
-      // Clear the token from the URL before navigating so it doesn't linger
-      window.history.replaceState(null, "", window.location.pathname);
+      // Replace the current history entry so the token doesn't linger in the URL
+      window.history.replaceState(null, "", "/auth/callback");
       navigate("/dashboard", { replace: true });
     } else {
-      setError("No token received from the server. Please try signing in again.");
-      setTimeout(() => navigate("/login", { replace: true }), 3000);
+      setError("Sign-in failed — no token received. Redirecting to login…");
+      setTimeout(() => navigate("/login", { replace: true }), 2500);
     }
-  }, [navigate]);
+  }, [navigate, searchParams]);
 
   return (
     <Box
