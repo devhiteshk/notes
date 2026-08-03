@@ -1,34 +1,31 @@
 /**
  * AuthCallback.jsx
  *
- * Handles the redirect from the backend after a successful OAuth login.
- * The backend redirects to /auth/callback?token=<jwt>
- * We read the token from the query string, store it in localStorage,
- * clear it from the URL, then navigate to the dashboard.
+ * The backend OAuth success handler sets an HttpOnly cookie and redirects
+ * here. There is nothing to read from the URL — the cookie is already set.
+ * We just forward the user to the dashboard.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import { initCsrf } from "../utils/csrf";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [error, setError] = useState(null);
+  const error = searchParams.get("error");
 
   useEffect(() => {
-    const token = searchParams.get("token");
-
-    if (token) {
-      localStorage.setItem("token", token);
-      // Replace the current history entry so the token doesn't linger in the URL
-      window.history.replaceState(null, "", "/auth/callback");
-      navigate("/dashboard", { replace: true });
-    } else {
-      setError("Sign-in failed — no token received. Redirecting to login…");
-      setTimeout(() => navigate("/login", { replace: true }), 2500);
+    if (error) {
+      navigate(`/login?error=${error}`, { replace: true });
+      return;
     }
-  }, [navigate, searchParams]);
+    // New session just started — fetch a fresh CSRF token, then go to dashboard
+    initCsrf().finally(() => {
+      navigate("/dashboard", { replace: true });
+    });
+  }, [navigate, error]);
 
   return (
     <Box
@@ -42,24 +39,10 @@ export default function AuthCallback() {
         backgroundColor: "#fff",
       }}
     >
-      {error ? (
-        <Typography
-          fontFamily="Inter, sans-serif"
-          fontSize={15}
-          color="#EF4444"
-          textAlign="center"
-          px={3}
-        >
-          {error}
-        </Typography>
-      ) : (
-        <>
-          <CircularProgress sx={{ color: "#7C3AED" }} />
-          <Typography fontFamily="Inter, sans-serif" fontSize={15} color="#6B7280">
-            Signing you in…
-          </Typography>
-        </>
-      )}
+      <CircularProgress sx={{ color: "#7C3AED" }} />
+      <Typography fontFamily="Inter, sans-serif" fontSize={15} color="#6B7280">
+        Signing you in…
+      </Typography>
     </Box>
   );
 }

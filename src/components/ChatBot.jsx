@@ -7,7 +7,8 @@ import ChatIcon from "@mui/icons-material/Chat";
 import SendIcon from "@mui/icons-material/Send";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import axios from "axios";
-import { token } from "../utils/getToken";
+
+const API = import.meta.env.VITE_APP_API_URL;
 
 const Avatar = ({ isBot }) => (
   <div
@@ -152,9 +153,9 @@ const ChatbotPopup = ({ handleUpdateFromChatbot }) => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_API_URL}/chat`,
+        `${API}/chat`,
         { message: userInput },
-        { headers: { Authorization: `Bearer ${token()}` } }
+        { withCredentials: true }
       );
       const botMessage = response?.data;
       if (botMessage?.elements) handleUpdateFromChatbot(botMessage.elements || []);

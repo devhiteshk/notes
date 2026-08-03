@@ -17,7 +17,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { token } from "../utils/getToken";
+
+const API = import.meta.env.VITE_APP_API_URL;
 
 // ─── empty state ──────────────────────────────────────────────────────────────
 function EmptyState() {
@@ -245,8 +246,8 @@ function ProjectC() {
   const getFiles = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_URL}/files/by-project/${params.id}`,
-        { headers: { Authorization: `Bearer ${token()}` } }
+        `${API}/files/by-project/${params.id}`,
+        { withCredentials: true }
       );
       if (response.status === 200) setData(response.data);
     } catch (err) {
@@ -258,10 +259,9 @@ function ProjectC() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_APP_API_URL}/files/${id}`,
-        { headers: { Authorization: `Bearer ${token()}` } }
-      );
+      const response = await axios.delete(`${API}/files/${id}`, {
+        withCredentials: true,
+      });
       if (response.status === 200) getFiles();
     } catch (err) {
       console.error(err);
