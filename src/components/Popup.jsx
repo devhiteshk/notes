@@ -1,9 +1,12 @@
 import * as React from "react";
+import axios from "axios";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Avatar, Divider, ListItemIcon, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
+
+const API = import.meta.env.VITE_APP_API_URL;
 
 export default function BasicMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -13,9 +16,13 @@ export default function BasicMenu() {
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     handleClose();
-    localStorage.removeItem("token");
+    try {
+      await axios.post(`${API}/auth/logout`, {}, { withCredentials: true });
+    } catch {
+      // proceed regardless
+    }
     navigate("/login");
   };
 

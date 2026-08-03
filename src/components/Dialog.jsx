@@ -16,7 +16,8 @@ import AddIcon from "@mui/icons-material/Add";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import CloseIcon from "@mui/icons-material/Close";
-import { token } from "../utils/getToken";
+
+const API = import.meta.env.VITE_APP_API_URL;
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -54,25 +55,15 @@ export default function FormDialog({ type, setRerender, projectId = "" }) {
     try {
       if (isFolder) {
         await axios.post(
-          `${import.meta.env.VITE_APP_API_URL}/projects`,
+          `${API}/projects`,
           { name },
-          {
-            headers: {
-              Authorization: `Bearer ${token()}`,
-              "Content-Type": "application/json",
-            },
-          }
+          { withCredentials: true }
         );
       } else {
         await axios.post(
-          `${import.meta.env.VITE_APP_API_URL}/files`,
+          `${API}/files`,
           { name, projectId },
-          {
-            headers: {
-              Authorization: `Bearer ${token()}`,
-              "Content-Type": "application/json",
-            },
-          }
+          { withCredentials: true }
         );
       }
       setRerender((old) => !old);

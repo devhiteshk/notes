@@ -31,9 +31,9 @@ const sections = [
         detail: "Folder names you create are stored and associated with your account.",
       },
       {
-        label: "JWT session token",
+        label: "Auth session cookie",
         detail:
-          "A signed JSON Web Token is stored in your browser's localStorage to keep you signed in for 48 hours. It contains only your user ID and expiry.",
+          "After sign-in, an HttpOnly cookie named auth_token is set in your browser. It contains a signed JWT with your user ID and expires in 48 hours. Because it is HttpOnly, JavaScript cannot read it, protecting it from XSS attacks.",
       },
     ],
   },

@@ -9,9 +9,10 @@ import ModeNightIcon from "@mui/icons-material/ModeNight";
 import { useParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import axios from "axios";
-import { token } from "../utils/getToken";
 import ChatbotPopup from "./ChatBot";
 import { initialElementsArray } from "../initialElements";
+
+const API = import.meta.env.VITE_APP_API_URL;
 
 const ExcalidrawComponent = () => {
   const excalidrawRef = useRef(null);
@@ -27,14 +28,9 @@ const ExcalidrawComponent = () => {
 
   const fetchInitialElements = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_URL}/files/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token()}`,
-          },
-        }
-      );
+      const response = await axios.get(`${API}/files/${id}`, {
+        withCredentials: true,
+      });
 
       const data = response.data;
       const initialElements = data.content ? JSON.parse(data.content) : [];
@@ -50,23 +46,14 @@ const ExcalidrawComponent = () => {
   };
 
   const saveToDatabase = async (elements) => {
-    let filteredElements = elements.filter((i) => !i.isDeleted);
-
+    const filteredElements = elements.filter((i) => !i.isDeleted);
     try {
       const response = await axios.put(
-        `${import.meta.env.VITE_APP_API_URL}/files/${id}`,
+        `${API}/files/${id}`,
         { content: JSON.stringify(filteredElements) },
-        {
-          headers: {
-            Authorization: `Bearer ${token()}`,
-            "Content-Type": "application/json",
-          },
-        }
+        { withCredentials: true }
       );
-
-      if (response.status !== 200) {
-        throw new Error("Failed to save data");
-      }
+      if (response.status !== 200) throw new Error("Failed to save data");
     } catch (error) {
       console.error("Error saving data:", error);
     }
